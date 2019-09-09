@@ -28,11 +28,15 @@
   		};
 
   		shuffleBackward = () => {
-  			console.log('backward');
+  			const newCardData = this.state.cardData;
+  			newCardData.unshift(newCardData.pop());
+  			this.setState({cardData: newCardData});
 		}
 
 		shuffleForward = () => {
-  			console.log('forward');
+  			const newCardData = this.state.cardData;
+  			newCardData.push(newCardData.shift());
+  			this.setState({cardData: newCardData});
 		}
 
 		render () {
@@ -45,7 +49,7 @@
 					</p>
 
 					<div className='card-list'>
-						{this.state.cardData.map((card, i) => <Card key={i} front={card.front} />)}
+						{this.state.cardData.map((card, i) => <Card key={i} front={card.front} back={card.back} index={i} />)}
 					</div>
 
 					<div className='buttons'>
@@ -61,18 +65,57 @@
   	  };
 
   	  class Card extends React.Component {
+  	  	  constructor() {
+  	  	  	super();
+  	  	  	this.state = {
+  	  	  		flipped: false
+  	  	  	};
+  	  	  }
+
+  	  	  flipCard = () => {
+  	  	  	if(this.props.index == 0) {
+  	  	  		this.setState({flipped: ! this.state.flipped});
+  	  	  	}
+  	  	  }
+
+  	  	  componentDidUpdate(prevProps, prevState) {
+		    if (prevState.flipped) {
+		      this.setState({ flipped: false });
+		    }
+		  }
+
+  	  	  cardClass = () => this.state.flipped ? 'Card -back' : 'Card -front';
+
 	  	  render() {
 	  	  	return (
-	  	  		<div className='Card-front'>
-	  	  			<div className='front'>
-	  	  				<h3 className='question'>
-	  	  					{this.props.front.question}
-	  	  				</h3>
+	  	  		<div className={this.cardClass()} onClick={() => this.flipCard()}>
+	  	  			{ this.state.flipped ?
+	  	  				<div className='back'>
+		  	  				<div className='image'>
+		  	  					<img src={this.props.back.image} />
+		  	  				</div>
 
-	  	  				<p className='hint'>
-	  	  					<span>Hint:</span> {this.props.front.hint}
-	  	  				</p>
-	  	  			</div>
+		  	  				<h3 className='answer'>
+						    	{this.props.back.answer}
+						    </h3>
+
+						    <p className='description'>
+						    	{this.props.back.description}
+						    </p>
+		  	  			</div>
+
+		  	  			:
+
+		  	  			<div className='front'>
+		  	  				<h3 className='question'>
+		  	  					{this.props.front.question}
+		  	  				</h3>
+
+		  	  				<p className='hint'>
+		  	  					<span>Hint:</span> {this.props.front.hint}
+		  	  				</p>
+		  	  			</div>
+	  	  			}
 	  	  		</div>
 	  	  	);
 	  	  }
