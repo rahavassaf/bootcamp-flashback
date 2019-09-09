@@ -16,20 +16,48 @@
       const cardData = importedFlashCardDataFile;
 
       class App extends React.Component {
-	      render () {
-	      	return (<div className='App'>
-		        <h1 className='title'>
-		          Flashback
-		        </h1>
-		        <p className='sub-title'>
-		          An interactive flashcard app.
-		        </p>
+		constructor() {
+			super();
+			this.state = {
+				cardData: []
+			};
+		};
 
-		        <div className='card-list'>
-		        	{cardData.map(card => <Card front={card.front} />)}
-		        </div>
-		      </div>);
-		  }
+		componentDidMount() {
+			this.setState({cardData: cardData});
+  		};
+
+  		shuffleBackward = () => {
+  			console.log('backward');
+		}
+
+		shuffleForward = () => {
+  			console.log('forward');
+		}
+
+		render () {
+			return (<div className='App'>
+					<h1 className='title'>
+						Flashback
+					</h1>
+					<p className='sub-title'>
+						An interactive flashcard app.
+					</p>
+
+					<div className='card-list'>
+						{this.state.cardData.map((card, i) => <Card key={i} front={card.front} />)}
+					</div>
+
+					<div className='buttons'>
+			          <button onClick={() => this.shuffleBackward()}>
+			            &lt;
+			          </button>
+			          <button onClick={() => this.shuffleForward()}>
+			            &gt;
+			          </button>
+			        </div>
+				</div>);
+		}
   	  };
 
   	  class Card extends React.Component {
